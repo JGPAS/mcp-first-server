@@ -56,10 +56,17 @@ const app = express();
 app.use(express.json());
 
 app.post("/mcp", async (req, res) => {
-  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
-  res.on("close", () => transport.close());
-  await server.connect(transport);
-  await transport.handleRequest(req, res, req.body);
+  console.log(`[${new Date().toISOString()}] Incoming MCP request`);
+  try {
+    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    res.on("close", () => transport.close());
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+    console.log(`[${new Date().toISOString()}] Request handled successfully`);
+  } catch (err) {
+    console.error(`[${new Date().toISOString()}] MCP request failed:`, err);
+    res.status(500).json({ error: "Something went wrong processing the request." });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
