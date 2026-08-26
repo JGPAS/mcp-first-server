@@ -54,6 +54,9 @@ server.registerTool(
 
 const app = express();
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.status(200).send("James's MCP server is running.");
+});
 
 app.post("/mcp", async (req, res) => {
   console.log(`[${new Date().toISOString()}] Incoming MCP request`);
