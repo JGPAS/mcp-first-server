@@ -53,7 +53,10 @@ server.registerTool(
 );
 
 const app = express();
-app.use(express.json());
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.originalUrl} ip=${req.headers["x-forwarded-for"] || req.ip} ua=${req.headers["user-agent"]}`);
+  next();
+});app.use(express.json());
 app.get("/", (req, res) => {
   res.status(200).send("James's MCP server is running.");
 });
